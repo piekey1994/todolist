@@ -1,0 +1,118 @@
+<div class="well bs-component">
+	<form class="form-horizontal" id="tobedoListForm">
+		<fieldset>
+			<legend>待完成</legend>
+			<div class="form-group">
+			{% for x in list %}
+				<div class="col-lg-10 col-lg-offset-2">
+					<div class="checkbox">
+	                    <label>
+	                        <input type="checkbox" name="numlist" value="{{x[0]}}">
+	                        <span class="checkbox-material"><span class="check"></span></span>	
+	                         &nbsp;#{{loop.index}}&nbsp;{{x[1]}}
+	                    </label>
+	                </div>
+                </div>
+			{% endfor %}
+			</div>
+			<div>
+				<a data-toggle="modal" data-target="#add-dialog" class="btn btn-flat btn-primary btn-sm mdi-content-add"></a>
+			</div>
+			<div class="col-lg-10 col-lg-offset-2">
+                <button type="button" class="btn btn-default" onclick="cleanForm('tobedoListForm')">重置</button>
+                <button type="button" class="btn btn-primary" onclick="moveForm()">移到隔壁</button>
+            </div>
+		</fieldset>
+	</form>
+</div>
+
+<!-- add模块 -->
+<div id="add-dialog" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleanAjax('addResult')">&times;</button>
+               <h4 class="modal-title">添加新日程</h4>
+            </div>
+            <div class="modal-body">
+            <div id="addResult"></div>	        
+            <!-- 表单 -->
+            	<form class="form-horizontal" id="addForm">
+            		<div class="form-group">
+			            <div class="col-lg-offset-1 col-lg-11">
+			                <textarea class="form-control" rows="4" id="textArea" name="text"></textarea>
+			                <span class="help-block">别写太长...</span>
+			            </div>
+			        </div>     
+            	</form>  
+            <!-- 表单 -->	 
+            </div>
+	        <div class="modal-footer">
+				<div class="col-lg-10 col-lg-offset-2">
+	                <button class="btn btn-default" onclick="cleanForm('addForm')">重置</button>
+	                <button class="btn btn-primary" onclick="subForm()" >添加</button>
+	            </div>	
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+	function cleanAjax(divID)
+	{
+		$('#'+divID).html('');
+	}
+	function cleanForm(formID)
+	{
+		myForm=document.getElementById(formID);
+		myForm.reset();
+	}
+	function subForm()
+	{
+		text=document.getElementById('textArea');
+		if(text.value.length==0)
+		{
+			alert("不写我就不让你交o(￣ヘ￣*o)");
+			text.focus();
+			return false;
+		}
+		$.ajax({
+			cache: false,
+			type: "POST",
+			url:"{{url_for('listController.add')}}",	
+			data:$('#addForm').serialize(),
+			async: false,
+			error: function(request) {
+			alert("发送请求失败！");
+			},
+			success: function(data) {
+				if(data=='true')
+				{
+					showTobedoList();
+				}
+				else
+				{
+					cleanForm('addForm');
+					$('#addResult').html(data);							
+				}						
+			}
+			});
+	}
+	function moveForm()
+	{
+		$.ajax({
+			cache: false,
+			type: "POST",
+			url:"{{url_for('listController.move')}}",	
+			data:$('#tobedoListForm').serialize(),
+			async: false,
+			error: function(request) {
+			alert("发送请求失败！");
+			},
+			success: function(data) {
+				showDoingList();
+				showTobedoList();
+			}
+			});
+	}
+</script>

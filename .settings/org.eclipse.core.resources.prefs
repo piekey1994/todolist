@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/WebRoot/__init__.py=utf-8
+encoding//src/WebRoot/lib.py=utf-8
+encoding//src/WebRoot/list.py=utf-8
+encoding//src/WebRoot/model.py=utf-8
+encoding//src/WebRoot/templates/index.html=UTF-8
+encoding//src/WebRoot/templates/login.html=UTF-8
+encoding//src/WebRoot/user.py=utf-8
+encoding/<project>=UTF-8

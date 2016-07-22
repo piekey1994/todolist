@@ -1,0 +1,50 @@
+<div class="well bs-component">
+	<form class="form-horizontal" id="doingListForm">
+		<fieldset>
+			<legend>进行中</legend>
+			<div class="form-group">
+			{% for x in list %}
+				<div class="col-lg-10 col-lg-offset-2">
+					<div class="checkbox">
+	                    <label>
+	                        <input type="checkbox" name="numlist" value="{{x[0]}}">
+	                        <span class="checkbox-material"><span class="check"></span></span>
+	                         &nbsp;#{{loop.index}}&nbsp;{{x[1]}}
+	                    </label>
+	                </div>
+                </div>
+			{% endfor %}
+			</div>
+			<div class="form-group">
+	            <div class="col-lg-10 col-lg-offset-2">
+	                <button type="button" class="btn btn-default" onclick="cleanForm('tobedoListForm')">重置</button>
+	                <button type="button" class="btn btn-primary" onclick="deleteForm()">搞定</button>
+	            </div>
+	        </div>
+		</fieldset>
+	</form>
+</div>
+
+<script>
+	function cleanForm(formID)
+	{
+		myForm=document.getElementById(formID);
+		myForm.reset();
+	}
+	function deleteForm()
+	{
+		$.ajax({
+			cache: false,
+			type: "POST",
+			url:"{{url_for('listController.delete')}}",	
+			data:$('#doingListForm').serialize(),
+			async: false,
+			error: function(request) {
+			alert("发送请求失败！");
+			},
+			success: function(data) {				
+				showDoingList();
+			}
+			});
+	}
+</script>
